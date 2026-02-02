@@ -1,0 +1,722 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flutter Mastery Roadmap: From Zero to Hero</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chosen Palette: Warm Sand & Stone
+         Background: #fafaf9 (Stone 50)
+         Surface: #ffffff (White)
+         Text Main: #44403c (Stone 700)
+         Text Muted: #78716c (Stone 500)
+         Accent: #d97706 (Amber 600 - Warm, energetic, resembling Kerala sunset/spices)
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafaf9;
+            color: #44403c;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f5f5f4; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d6d3d1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e; 
+        }
+
+        /* Chart Container Styling - Mandatory per instructions */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%; /* Parent controls width */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Utility for hiding elements */
+        .hidden-content {
+            display: none;
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col md:flex-row overflow-hidden">
+
+    <!-- Application Structure Plan:
+         1. Sidebar Navigation: Persistent on desktop, collapsible on mobile. Segments the syllabus into logical 'Modules' (Basics, UI, State, Data, etc.).
+         2. Main Content Area: Dynamic container.
+            - 'Dashboard' View: Default on load. Visualizes the learning curve, total progress, and estimated timeline.
+            - 'Module' View: Renders a list of Task Cards for the selected module.
+         3. Task Cards: The core interaction unit. Each card expands to show:
+            - 'Concept': What is being learned (e.g., Scaffold).
+            - 'The Mission': The specific mini-app to build.
+            - 'Git Checkpoint': Instructions for version control.
+         4. Data Architecture: All syllabus content is stored in a JSON-like JS structure to allow easy dynamic rendering and filtering.
+    -->
+
+    <!-- Sidebar -->
+    <aside class="w-full md:w-64 bg-white border-r border-stone-200 flex flex-col z-20 shadow-sm">
+        <div class="p-6 border-b border-stone-100 flex items-center justify-between">
+            <div>
+                <h1 class="text-xl font-bold text-amber-600 tracking-tight">Flutter<span class="text-stone-700">Path</span></h1>
+                <p class="text-xs text-stone-500 mt-1">Kerala Mentor Edition</p>
+            </div>
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="md:hidden text-stone-500 hover:text-amber-600">
+                <span class="text-2xl">☰</span>
+            </button>
+        </div>
+
+        <nav id="sidebar-nav" class="flex-1 overflow-y-auto py-4 hidden md:block">
+            <ul class="space-y-1 px-3" id="nav-list">
+                <!-- Nav items injected by JS -->
+            </ul>
+        </nav>
+
+        <div class="p-4 border-t border-stone-100 bg-stone-50 hidden md:block">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 font-bold">
+                    ME
+                </div>
+                <div>
+                    <p class="text-sm font-medium">Mentor View</p>
+                    <p class="text-xs text-stone-500">Student Progress: 0%</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-stone-50/50">
+        <!-- Top Bar (Context) -->
+        <header class="bg-white border-b border-stone-200 px-8 py-4 flex justify-between items-center shadow-sm">
+            <div>
+                <h2 id="page-title" class="text-2xl font-semibold text-stone-800">Dashboard</h2>
+                <p id="page-subtitle" class="text-sm text-stone-500">Overview of the learning journey</p>
+            </div>
+            <div class="hidden sm:flex gap-3">
+                <button class="px-4 py-2 text-sm font-medium text-stone-600 bg-stone-100 rounded-lg hover:bg-stone-200 transition">
+                    Reset Progress
+                </button>
+                <button class="px-4 py-2 text-sm font-medium text-white bg-amber-600 rounded-lg hover:bg-amber-700 transition shadow-md shadow-amber-200">
+                    Share Roadmap
+                </button>
+            </div>
+        </header>
+
+        <!-- Dynamic Content Scroll Area -->
+        <div id="content-area" class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
+            <!-- Content Injected Here -->
+        </div>
+    </main>
+
+    <!-- Placeholder for JS Data & Logic -->
+    <!-- Visualization & Content Choices:
+         1. Radar Chart (Chart.js): Shows skill balance (UI vs Logic vs Data) needed for a full app. Goal: Motivate students by showing holistic growth.
+         2. Line Chart (Chart.js): Shows the "Difficulty vs Fun" curve. Goal: Manage expectations (learning state management is hard, but gets fun).
+         3. Task Cards (HTML/JS): Expandable cards allow users to focus on one step at a time without getting overwhelmed.
+         4. Progress Bars: Simple HTML/Tailwind styling to show completion status.
+         5. NO SVG/Mermaid: All icons are Unicode or CSS shapes.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script>
+        // --- 1. SYLLABUS DATA STORE ---
+        // This object holds the entire curriculum content.
+        const flutterSyllabus = {
+            modules: [
+                {
+                    id: 'dashboard',
+                    title: '🚀 Dashboard',
+                    type: 'overview',
+                    icon: '📊'
+                },
+                {
+                    id: 'mod1',
+                    title: 'Level 1: The Foundation',
+                    subtitle: 'Dart Basics & First Screen',
+                    icon: '🏗️',
+                    intro: "Every skyscraper needs a solid foundation. In this module, we strip away the complexity. We aren't building WhatsApp yet; we are learning how to put a single pixel on the screen. We focus on understanding the `main` entry point and the widget tree structure.",
+                    tasks: [
+                        {
+                            id: 't1_1',
+                            title: 'The Entry Point',
+                            concept: 'void main(), runApp(), MaterialApp',
+                            desc: 'Understand how a Flutter app launches. Learn the difference between a function and a Widget.',
+                            challenge: 'Create a screen that is just a black background with no errors.',
+                            git: 'Init repo, create main branch, commit "Initial Commit".'
+                        },
+                        {
+                            id: 't1_2',
+                            title: 'Hello Kerala',
+                            concept: 'Text Widget, Center Widget, TextStyle',
+                            desc: 'Drawing text on screen. Playing with fonts, colors, and size.',
+                            challenge: 'Display your name in the center of the screen with gold color and size 30.',
+                            git: 'Commit "Added Hello Text".'
+                        },
+                        {
+                            id: 't1_3',
+                            title: 'The Skeleton',
+                            concept: 'Scaffold, AppBar, Body',
+                            desc: 'The Scaffold widget gives us the standard app structure (Top bar, white background).',
+                            challenge: 'Build a page with a Blue AppBar titled "My First App" and white body.',
+                            git: 'Commit "Implemented Scaffold structure".'
+                        }
+                    ]
+                },
+                {
+                    id: 'mod2',
+                    title: 'Level 2: Building Layouts',
+                    subtitle: 'Rows, Columns & Containers',
+                    icon: '📐',
+                    intro: "User Interface (UI) is about arranging things. Next to each other? That's a Row. On top of each other? That's a Column. This module is purely about visual structure. No logic yet, just making things look good.",
+                    tasks: [
+                        {
+                            id: 't2_1',
+                            title: 'The Magic Box',
+                            concept: 'Container, Colors, Margin, Padding',
+                            desc: 'The Container is your swiss-army knife for painting boxes, adding space, and borders.',
+                            challenge: 'Create 3 colored boxes (Red, Green, Blue) of size 100x100.',
+                            git: 'Commit "Created colored boxes".'
+                        },
+                        {
+                            id: 't2_2',
+                            title: 'Stacking Bricks',
+                            concept: 'Column & MainAxisAlignment',
+                            desc: 'Arranging widgets vertically. Learning how to space them out (center, space-between).',
+                            challenge: 'Arrange your 3 boxes vertically with equal spacing.',
+                            git: 'Commit "Implemented Column layout".'
+                        },
+                        {
+                            id: 't2_3',
+                            title: 'Row Your Boat',
+                            concept: 'Row & CrossAxisAlignment',
+                            desc: 'Arranging widgets horizontally.',
+                            challenge: 'Put the 3 boxes side-by-side. Make the middle one smaller.',
+                            git: 'Commit "Implemented Row layout".'
+                        },
+                        {
+                            id: 't2_4',
+                            title: 'Project: Profile Card',
+                            concept: 'Combining Rows/Columns, CircleAvatar',
+                            desc: 'Combine what you learned to make a social media profile header.',
+                            challenge: 'Build a UI with a circular photo, Name (Text), and "Flutter Developer" (Text) below it.',
+                            git: 'Commit "Finished Profile UI". Post screenshot to LinkedIn.'
+                        }
+                    ]
+                },
+                {
+                    id: 'mod3',
+                    title: 'Level 3: Interaction & State',
+                    subtitle: 'Buttons & StatefulWidgets',
+                    icon: '⚡',
+                    intro: "An app that doesn't react is just a painting. Here we add life. We learn how to capture taps (clicks) and, crucially, how to update the screen data using `setState`. This is the heart of interactivity.",
+                    tasks: [
+                        {
+                            id: 't3_1',
+                            title: 'Click Me',
+                            concept: 'ElevatedButton, TextButton, onPressed',
+                            desc: 'Making things clickable. Printing "Clicked!" to the debug console.',
+                            challenge: 'Add a button that prints "Hello" to the terminal when tapped.',
+                            git: 'Commit "Added interactive button".'
+                        },
+                        {
+                            id: 't3_2',
+                            title: 'The Counter Problem',
+                            concept: 'StatefulWidget vs Stateless',
+                            desc: 'Why variables don’t update the screen automatically. Introduction to `setState`.',
+                            challenge: 'Create the classic Counter App from scratch (don\'t use the default code!).',
+                            git: 'Commit "Implemented Counter Logic".'
+                        },
+                        {
+                            id: 't3_3',
+                            title: 'Project: Tasbeeh Counter',
+                            concept: 'Logic + UI',
+                            desc: 'A digital counter with a "Reset" button and a "Count" button.',
+                            challenge: 'UI with a big number in center. Increment button adds 1. Reset button sets to 0.',
+                            git: 'Commit "Finished Tasbeeh App".'
+                        }
+                    ]
+                },
+                {
+                    id: 'mod4',
+                    title: 'Level 4: Navigation & Lists',
+                    subtitle: 'Moving between screens',
+                    icon: '🗺️',
+                    intro: "Real apps have multiple screens. We learn the stack-based navigation model (Push/Pop). We also tackle displaying long lists of data, like a WhatsApp chat list, which is essential for almost every app.",
+                    tasks: [
+                        {
+                            id: 't4_1',
+                            title: 'Go to Details',
+                            concept: 'Navigator.push, Navigator.pop',
+                            desc: 'Moving from Screen A to Screen B and back.',
+                            challenge: 'Screen A has a button "Open Details". Screen B has a text "Details Here" and a Back arrow.',
+                            git: 'Commit "Added Navigation".'
+                        },
+                        {
+                            id: 't4_2',
+                            title: 'Infinite Scroll',
+                            concept: 'ListView.builder',
+                            desc: 'Efficiently rendering 1000 items without crashing memory.',
+                            challenge: 'Display a list of 50 items saying "Student #1", "Student #2", etc.',
+                            git: 'Commit "Implemented ListView".'
+                        },
+                        {
+                            id: 't4_3',
+                            title: 'Project: Simple Contacts',
+                            concept: 'ListTile, Divider, Navigation',
+                            desc: 'A list of names. Tapping a name opens a new screen showing that name.',
+                            challenge: 'Contact List UI. Tap "John" -> New Screen says "Hello John".',
+                            git: 'Commit "Finished Contacts App".'
+                        }
+                    ]
+                },
+                {
+                    id: 'mod5',
+                    title: 'Level 5: State Management',
+                    subtitle: 'Provider Pattern',
+                    icon: '🧠',
+                    intro: "Passing data between screens using constructors gets messy (spaghetti code). We introduce 'Provider', a professional way to manage app state centrally. This is a big level-up moment.",
+                    tasks: [
+                        {
+                            id: 't5_1',
+                            title: 'The Prop Drilling Problem',
+                            concept: 'Why we need State Management',
+                            desc: 'Try passing a variable through 3 layers of widgets. Feel the pain.',
+                            challenge: 'No code, just conceptual understanding.',
+                            git: 'N/A'
+                        },
+                        {
+                            id: 't5_2',
+                            title: 'Setup Provider',
+                            concept: 'ChangeNotifier, Consumer',
+                            desc: 'Separating Logic (Brain) from UI (Face).',
+                            challenge: 'Refactor the Counter App to use Provider. Separate the `count` variable into a new class.',
+                            git: 'Commit "Refactored to Provider".'
+                        },
+                        {
+                            id: 't5_3',
+                            title: 'Project: Todo List (In-Memory)',
+                            concept: 'CRUD Operations with Provider',
+                            desc: 'Add, Remove, and Check-off tasks.',
+                            challenge: 'A list where you can add tasks via a TextField and delete them by swiping.',
+                            git: 'Commit "Finished Provider Todo App".'
+                        }
+                    ]
+                },
+                {
+                    id: 'mod6',
+                    title: 'Level 6: Data Persistence',
+                    subtitle: 'Shared Preferences & API',
+                    icon: '💾',
+                    intro: "Apps usually need to save data or fetch it from the internet. We start with local storage for simple settings, then move to calling REST APIs to get real-world data like Weather or News.",
+                    tasks: [
+                        {
+                            id: 't6_1',
+                            title: 'Remember Me',
+                            concept: 'Shared Preferences',
+                            desc: 'Saving small data (theme, login status) that survives app restart.',
+                            challenge: 'Save the "Counter" value so it doesn\'t reset when you close the app.',
+                            git: 'Commit "Added Local Storage".'
+                        },
+                        {
+                            id: 't6_2',
+                            title: 'Hello Internet',
+                            concept: 'http package, async/await',
+                            desc: 'Fetching data from a URL.',
+                            challenge: 'Fetch a random joke from a free JSON API and display it.',
+                            git: 'Commit "Added API Integration".'
+                        },
+                        {
+                            id: 't6_3',
+                            title: 'Project: News Reader',
+                            concept: 'JSON Serialization, FutureBuilder',
+                            desc: 'Handling loading states, error states, and data display.',
+                            challenge: 'Show a list of news headlines. Show a spinner while loading.',
+                            git: 'Commit "Finished News App". Post video to LinkedIn.'
+                        }
+                    ]
+                },
+                {
+                    id: 'mod7',
+                    title: 'Final Boss: Full App',
+                    subtitle: 'Architecture & Firebase',
+                    icon: '🏆',
+                    intro: "The capstone project. We bring everything together: UI, Provider, and Firebase for a real-time cloud backend. We also look at organizing our code folders professionally.",
+                    tasks: [
+                        {
+                            id: 't7_1',
+                            title: 'Firebase Setup',
+                            concept: 'Console setup, GoogleServices.json',
+                            desc: 'Connecting your app to Google\'s backend.',
+                            challenge: 'Connect your app to a Firebase project.',
+                            git: 'Commit "Firebase Configured".'
+                        },
+                        {
+                            id: 't7_2',
+                            title: 'Clean Architecture',
+                            concept: 'Folders: /models, /screens, /services, /widgets',
+                            desc: 'Organizing code so teammates can read it.',
+                            challenge: 'Re-organize the project structure.',
+                            git: 'Commit "Folder Structure Refactor".'
+                        },
+                        {
+                            id: 't7_3',
+                            title: 'Capstone: Social Notes App',
+                            concept: 'Firestore (CRUD) + Auth',
+                            desc: 'Users can login (anon), write public notes, and see others\' notes in real-time.',
+                            challenge: 'Build the full app. Deploy to a friends phone.',
+                            git: 'Commit "Initial Release v1.0". Post Project Link.'
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // --- 2. STATE MANAGEMENT ---
+        let currentModuleId = 'dashboard';
+        
+        // --- 3. RENDER LOGIC ---
+
+        function init() {
+            renderSidebar();
+            renderContent();
+            setupMobileMenu();
+        }
+
+        function setupMobileMenu() {
+            const btn = document.getElementById('mobile-menu-btn');
+            const nav = document.getElementById('sidebar-nav');
+            btn.addEventListener('click', () => {
+                nav.classList.toggle('hidden');
+                nav.classList.toggle('block');
+            });
+        }
+
+        function renderSidebar() {
+            const navList = document.getElementById('nav-list');
+            navList.innerHTML = '';
+
+            flutterSyllabus.modules.forEach(mod => {
+                const li = document.createElement('li');
+                const isActive = mod.id === currentModuleId;
+                
+                let btnClass = isActive 
+                    ? 'bg-amber-50 text-amber-700 border-r-4 border-amber-600 font-medium' 
+                    : 'text-stone-600 hover:bg-stone-50 hover:text-stone-900';
+
+                li.innerHTML = `
+                    <button onclick="navigateTo('${mod.id}')" class="w-full text-left px-3 py-3 rounded-l-md transition flex items-center gap-3 ${btnClass}">
+                        <span class="text-xl">${mod.icon}</span>
+                        <div class="flex flex-col">
+                            <span class="text-sm">${mod.title}</span>
+                            ${mod.subtitle ? `<span class="text-[10px] text-stone-400 font-normal uppercase tracking-wider">${mod.type === 'overview' ? 'Overview' : 'Module'}</span>` : ''}
+                        </div>
+                    </button>
+                `;
+                navList.appendChild(li);
+            });
+        }
+
+        window.navigateTo = function(id) {
+            currentModuleId = id;
+            renderSidebar();
+            renderContent();
+            // Close mobile menu if open
+            if(window.innerWidth < 768) {
+                document.getElementById('sidebar-nav').classList.add('hidden');
+            }
+        };
+
+        function renderContent() {
+            const contentArea = document.getElementById('content-area');
+            const pageTitle = document.getElementById('page-title');
+            const pageSubtitle = document.getElementById('page-subtitle');
+            
+            // Find current module data
+            const activeModule = flutterSyllabus.modules.find(m => m.id === currentModuleId);
+            
+            // Update Headers
+            pageTitle.innerText = activeModule.title;
+            pageSubtitle.innerText = activeModule.subtitle || "Track your progress";
+            
+            // Render specific view
+            if (activeModule.type === 'overview') {
+                renderDashboard(contentArea);
+            } else {
+                renderModuleDetail(contentArea, activeModule);
+            }
+        }
+
+        // --- 4. DASHBOARD VIEW ---
+        function renderDashboard(container) {
+            container.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- Welcome Card -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 col-span-1 lg:col-span-2">
+                        <h3 class="text-lg font-bold text-stone-800 mb-2">Welcome, Mentor! 👋</h3>
+                        <p class="text-stone-600 text-sm leading-relaxed">
+                            This interactive syllabus is designed for the "Learn by Doing" approach. 
+                            Each level is a milestone. We don't teach theory for weeks; we teach a widget, then build a UI immediately.
+                            Use the timeline below to guide your students from "Hello World" to "Hired".
+                        </p>
+                    </div>
+
+                    <!-- Chart 1: The Learning Curve -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col items-center">
+                        <h4 class="text-sm font-semibold text-stone-500 uppercase tracking-wide mb-4 w-full text-left">The Learning Curve</h4>
+                        <div class="chart-container">
+                            <canvas id="learningCurveChart"></canvas>
+                        </div>
+                        <p class="text-xs text-stone-400 mt-4 text-center">Difficulty spikes at State Management, then plateaus.</p>
+                    </div>
+
+                    <!-- Chart 2: Skill Distribution -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col items-center">
+                        <h4 class="text-sm font-semibold text-stone-500 uppercase tracking-wide mb-4 w-full text-left">Target Skill Mix</h4>
+                        <div class="chart-container">
+                            <canvas id="skillsRadarChart"></canvas>
+                        </div>
+                        <p class="text-xs text-stone-400 mt-4 text-center">A balanced Flutter dev needs UI, Logic, and Backend skills.</p>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-amber-50 p-4 rounded-lg border border-amber-100 text-center">
+                        <span class="block text-2xl font-bold text-amber-600">7</span>
+                        <span class="text-xs text-amber-800 uppercase font-medium">Levels</span>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-stone-200 text-center">
+                        <span class="block text-2xl font-bold text-stone-700">21</span>
+                        <span class="text-xs text-stone-500 uppercase font-medium">Mini Projects</span>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-stone-200 text-center">
+                        <span class="block text-2xl font-bold text-stone-700">100%</span>
+                        <span class="text-xs text-stone-500 uppercase font-medium">Practical</span>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border border-stone-200 text-center">
+                        <span class="block text-2xl font-bold text-stone-700">GitHub</span>
+                        <span class="text-xs text-stone-500 uppercase font-medium">Integrated</span>
+                    </div>
+                </div>
+            `;
+
+            // Initialize Charts
+            initDashboardCharts();
+        }
+
+        function initDashboardCharts() {
+            // Chart 1: Learning Curve (Line)
+            const ctx1 = document.getElementById('learningCurveChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: ['Basics', 'Layouts', 'Interactivity', 'Nav', 'Provider', 'API', 'Firebase'],
+                    datasets: [{
+                        label: 'Concept Difficulty',
+                        data: [10, 30, 40, 45, 85, 70, 75],
+                        borderColor: '#d97706', // Amber 600
+                        backgroundColor: 'rgba(217, 119, 6, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Fun Factor',
+                        data: [20, 60, 70, 65, 40, 90, 95], // Fun drops when learning provider initially, creates a "dip"
+                        borderColor: '#78716c', // Stone 500
+                        borderDash: [5, 5],
+                        tension: 0.4,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100, display: false },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Chart 2: Skills Radar
+            const ctx2 = document.getElementById('skillsRadarChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'radar',
+                data: {
+                    labels: ['UI Building', 'Dart Logic', 'State Mgmt', 'Networking', 'Database', 'Git/Tools'],
+                    datasets: [{
+                        label: 'Junior Dev Target',
+                        data: [90, 75, 70, 60, 50, 80],
+                        backgroundColor: 'rgba(217, 119, 6, 0.2)',
+                        borderColor: '#d97706',
+                        pointBackgroundColor: '#d97706'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e7e5e4' },
+                            grid: { color: '#e7e5e4' },
+                            pointLabels: { font: { size: 11 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- 5. MODULE DETAIL VIEW ---
+        function renderModuleDetail(container, module) {
+            container.innerHTML = `
+                <!-- Intro Section -->
+                <div class="mb-8 max-w-3xl">
+                    <h3 class="text-lg font-bold text-stone-800 flex items-center gap-2">
+                        <span class="bg-amber-100 text-amber-700 p-1 rounded text-sm">Module Goal</span>
+                    </h3>
+                    <p class="mt-2 text-stone-600 leading-relaxed text-md">
+                        ${module.intro}
+                    </p>
+                </div>
+
+                <!-- Task List -->
+                <div class="space-y-6">
+                    ${module.tasks.map((task, index) => renderTaskCard(task, index, module.id)).join('')}
+                </div>
+
+                <!-- Next Steps -->
+                <div class="mt-12 p-6 bg-stone-100 rounded-lg text-center">
+                    <p class="text-stone-500 mb-4">Completed all tasks in this module?</p>
+                    <button class="bg-stone-800 text-white px-6 py-2 rounded hover:bg-black transition">
+                        Proceed to Next Level
+                    </button>
+                </div>
+            `;
+        }
+
+        function renderTaskCard(task, index, modId) {
+            const taskId = `${modId}_${index}`;
+            
+            return `
+                <div class="bg-white border border-stone-200 rounded-xl overflow-hidden card-hover">
+                    <!-- Card Header (Always Visible) -->
+                    <div class="p-5 flex items-start gap-4 cursor-pointer" onclick="toggleTask('${taskId}')">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-stone-100 border border-stone-200 flex items-center justify-center text-stone-500 font-bold text-sm">
+                            ${index + 1}
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-lg font-semibold text-stone-800">${task.title}</h4>
+                            <p class="text-sm text-stone-500 mt-1">${task.concept}</p>
+                        </div>
+                        <button class="text-stone-400 hover:text-amber-600 transition">
+                            <span id="icon_${taskId}">▼</span>
+                        </button>
+                    </div>
+
+                    <!-- Card Body (Expandable) -->
+                    <div id="body_${taskId}" class="hidden-content border-t border-stone-100 bg-stone-50/50">
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            
+                            <!-- Learning Content -->
+                            <div class="space-y-4">
+                                <div>
+                                    <h5 class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1">What to Learn</h5>
+                                    <p class="text-sm text-stone-700">${task.desc}</p>
+                                </div>
+                                <div class="bg-white p-4 rounded border border-stone-200 shadow-sm">
+                                    <h5 class="text-xs font-bold text-stone-800 uppercase tracking-wider mb-2 flex items-center gap-2">
+                                        <span>🛠️</span> The Challenge
+                                    </h5>
+                                    <p class="text-sm text-stone-600 italic">"${task.challenge}"</p>
+                                </div>
+                            </div>
+
+                            <!-- Action Items -->
+                            <div class="space-y-4">
+                                <div class="bg-stone-800 text-stone-200 p-4 rounded-lg">
+                                    <h5 class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-2 flex items-center gap-2">
+                                        <span>🐱</span> Git Milestone
+                                    </h5>
+                                    <code class="text-xs font-mono block mb-2 bg-black/30 p-2 rounded text-green-400">
+                                        > git add .<br>
+                                        > git commit -m "${task.git.replace(/"/g, "'")}"<br>
+                                        > git push
+                                    </code>
+                                    <p class="text-[10px] text-stone-400">Remember to push your code after every task!</p>
+                                </div>
+                                
+                                <div class="flex items-center gap-2 pt-2">
+                                    <input type="checkbox" id="check_${taskId}" class="w-5 h-5 text-amber-600 rounded border-stone-300 focus:ring-amber-500">
+                                    <label for="check_${taskId}" class="text-sm font-medium text-stone-700">Mark Task Complete</label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.toggleTask = function(taskId) {
+            const body = document.getElementById(`body_${taskId}`);
+            const icon = document.getElementById(`icon_${taskId}`);
+            
+            if (body.classList.contains('hidden-content')) {
+                body.classList.remove('hidden-content');
+                icon.innerText = '▲';
+                icon.classList.add('text-amber-600');
+            } else {
+                body.classList.add('hidden-content');
+                icon.innerText = '▼';
+                icon.classList.remove('text-amber-600');
+            }
+        };
+
+        // Start
+        init();
+
+    </script>
+</body>
+</html>
